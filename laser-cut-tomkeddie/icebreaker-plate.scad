@@ -30,20 +30,50 @@
 hole_diameter=3.3;
 corner_radius=5;
 edge_offset=5;
-y_hole_spacing=44;
-x_hole_spacing=31;
+pmod_overhang=103-80;
+x_hole_spacing_main=77-33;
+x_hole_spacing_pmod=92-33;
+y_hole_spacing_main=63-32;
+y_hole_spacing_pmod=55-40;
 
-difference() {
-    hull() {
-        translate([+(x_hole_spacing/2+edge_offset), +(y_hole_spacing/2+edge_offset)]) circle(r=corner_radius, $fn=48);
-        translate([+(x_hole_spacing/2+edge_offset), -(y_hole_spacing/2+edge_offset)]) circle(r=corner_radius, $fn=48);
-        translate([-(x_hole_spacing/2+edge_offset), +(y_hole_spacing/2+edge_offset)]) circle(r=corner_radius, $fn=48);
-        translate([-(x_hole_spacing/2+edge_offset), -(y_hole_spacing/2+edge_offset)]) circle(r=corner_radius, $fn=48);
-    }
-
-    translate([+x_hole_spacing/2, +y_hole_spacing/2]) circle(d=hole_diameter, $fn=48);
-    translate([+x_hole_spacing/2, -y_hole_spacing/2]) circle(d=hole_diameter, $fn=48);
-    translate([-x_hole_spacing/2, +y_hole_spacing/2]) circle(d=hole_diameter, $fn=48);
-    translate([-x_hole_spacing/2, -y_hole_spacing/2]) circle(d=hole_diameter, $fn=48);
-
+module main_holes() {
+        translate([+x_hole_spacing_main/2, +y_hole_spacing_main/2]) circle(d=hole_diameter, $fn=48);
+        translate([+x_hole_spacing_main/2, -y_hole_spacing_main/2]) circle(d=hole_diameter, $fn=48);
+        translate([-x_hole_spacing_main/2, +y_hole_spacing_main/2]) circle(d=hole_diameter, $fn=48);
+        translate([-x_hole_spacing_main/2, -y_hole_spacing_main/2]) circle(d=hole_diameter, $fn=48);
 }
+
+module pmod_holes() {
+        translate([+x_hole_spacing_main/2+(x_hole_spacing_pmod-x_hole_spacing_main), +y_hole_spacing_pmod/2]) circle(d=hole_diameter, $fn=48);
+        translate([+x_hole_spacing_main/2+(x_hole_spacing_pmod-x_hole_spacing_main), -y_hole_spacing_pmod/2]) circle(d=hole_diameter, $fn=48);
+}
+
+module plate_no_pmod() {
+    difference() {
+        hull() {
+            translate([+(x_hole_spacing_main/2+edge_offset), +(y_hole_spacing_main/2+edge_offset)]) circle(r=corner_radius, $fn=48);
+            translate([+(x_hole_spacing_main/2+edge_offset), -(y_hole_spacing_main/2+edge_offset)]) circle(r=corner_radius, $fn=48);
+            translate([-(x_hole_spacing_main/2+edge_offset), +(y_hole_spacing_main/2+edge_offset)]) circle(r=corner_radius, $fn=48);
+            translate([-(x_hole_spacing_main/2+edge_offset), -(y_hole_spacing_main/2+edge_offset)]) circle(r=corner_radius, $fn=48);
+        }
+
+        main_holes();
+    }
+}
+
+module plate_with_pmod() {
+    difference() {
+        hull() {
+            translate([+(x_hole_spacing_main/2+edge_offset+pmod_overhang), +(y_hole_spacing_main/2+edge_offset)]) circle(r=corner_radius, $fn=48);
+            translate([+(x_hole_spacing_main/2+edge_offset+pmod_overhang), -(y_hole_spacing_main/2+edge_offset)]) circle(r=corner_radius, $fn=48);
+            translate([-(x_hole_spacing_main/2+edge_offset), +(y_hole_spacing_main/2+edge_offset)]) circle(r=corner_radius, $fn=48);
+            translate([-(x_hole_spacing_main/2+edge_offset), -(y_hole_spacing_main/2+edge_offset)]) circle(r=corner_radius, $fn=48);
+        }
+
+        main_holes();
+        pmod_holes();
+    }
+}
+
+//plate_no_pmod();
+plate_with_pmod();
